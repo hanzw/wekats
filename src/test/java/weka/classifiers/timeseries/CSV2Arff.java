@@ -27,7 +27,7 @@ public class CSV2Arff {
 			CSVLoader loader = new CSVLoader();
 System.out.println(file);
 // if last one is date
-		loader.setDateFormat("yyyy-mm");
+		loader.setDateFormat("yyyy-MM-dd");
 			loader.setDateAttributes("last");
 			loader.setSource(file);
 			Instances data = loader.getDataSet();

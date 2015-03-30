@@ -49,7 +49,7 @@ public class WekaForecasterTest {
 			// load the data
 			Instances data = new Instances(new BufferedReader(new FileReader(
 					input)));
-			data.sort(data.attribute("Date"));
+			data.stableSort(5);
 			Instances train = new Instances(data, 0, data.size()
 					- testDataLength);
 			Instances test = new Instances(data, data.size() - testDataLength,
@@ -59,7 +59,6 @@ public class WekaForecasterTest {
 				// checkDiff(train);
 				// new forecaster
 				int indexOfAtt = 0;
-
 				for (String s : Main.dataAttributes)
 					if (s.equals(attribute)) {
 						break;
@@ -69,28 +68,25 @@ public class WekaForecasterTest {
 				result.add(test.attributeToDoubleArray(indexOfAtt)[0]);
 				if (allSame(train, indexOfAtt)) {
 					System.out.println("all same");
-
 					result.add(Double.NaN);
 				} else {
-
 					WekaForecaster forecaster = new WekaForecaster();
 					forecaster.setFieldsToForecast(attribute);
 					weka.classifiers.functions.SMOreg scheme = new weka.classifiers.functions.SMOreg();
-
 					if (!artIndex) {
 						forecaster.getTSLagMaker().setTimeStampField("Date");
-						forecaster.getTSLagMaker().setMinLag(1);
-						forecaster.getTSLagMaker().setMaxLag(4); // monthly data
+						//forecaster.getTSLagMaker().setMinLag(1);
+						//forecaster.getTSLagMaker().setMaxLag(4); // monthly data
 						// add a quarter of the year indicator field
-						forecaster.getTSLagMaker().setAddQuarterOfYear(true);
+					    forecaster.getTSLagMaker().setAddQuarterOfYear(true);
 						forecaster.getTSLagMaker().setAddMonthOfYear(true);
-						forecaster.getTSLagMaker().determinePeriodicity(train,
-								"Date", TSLagMaker.Periodicity.QUARTERLY);
-						// forecaster.getTSLagMaker().determinePeriodicity(train,
-						// "Date",
-						// null);
+					//forecaster.getTSLagMaker().setAddDayOfWeek(true);
+						//forecaster.getTSLagMaker().determinePeriodicity(train,
+					//			"Date", TSLagMaker.Periodicity.QUARTERLY);
+						 forecaster.getTSLagMaker().determinePeriodicity(train,
+						 "Date",
+						 null);
 					}
-
 					scheme.setOptions(weka.core.Utils
 					// .splitOptions("-C 1.0 -N 0 -I \"weka.classifiers.functions.supportVector.RegSMOImproved -T 0.001 -V -P 1.0E-12 -L 0.001 -W 1\" -K \"weka.classifiers.functions.supportVector.NormalizedPolyKernel -E 2.0 -C 250007\""));
 							.splitOptions(" -C 1.0 -N 0 -I \"weka.classifiers.functions.supportVector.RegSMOImproved -T 0.001 -V -P 1.0E-12 -L 0.001 -W 1\" -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\""));
@@ -132,15 +128,12 @@ public class WekaForecasterTest {
 					// +
 					// " 1-step-ahead prediction(s): (Name of attribute:Actural,Predicted Value)");
 					int countNA = 0;
-
 					// ----
-
 					forecaster.primeForecaster(train);
 					List<List<NumericPrediction>> eforecast = forecaster
 							.forecast(1, System.out);
 					System.out.print("" + eforecast.get(0).get(0).predicted()
 							+ " ");
-
 					// ----
 
 					// List<List<NumericPrediction>> predLL = eval
@@ -153,26 +146,24 @@ public class WekaForecasterTest {
 					// .getM_predictions().get(0).get(0);
 
 					int indexOfFa = 0;
+
 					for (String s : Main.forecastAttributes)
 						if (s.equals(attribute)) {
 							break;
 						} else {
 							indexOfFa++;
+					
 						}
-
 					Main.count[indexOfFa] += 1;
-
 					result.add((double) Math.round(eforecast.get(0).get(0)
 							.predicted()));
 					Main.sumErr[indexOfFa] += Math.abs(Math.round(eforecast
 							.get(0).get(0).predicted())
 							- test.attributeToDoubleArray(indexOfAtt)[0]);
 				}
-
 				// if (countNA < Main.dataAttributes.length - 2) {
 				// System.out.println(eval.toSummaryString());
 				// }
-
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
