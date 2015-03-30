@@ -20,7 +20,7 @@ public class WekaForecasterTest {
 
 	static final int testDataLength = 1;
 	static final int stepAhead = 1;
-
+    static final boolean artIndex=false;
 	WekaForecasterTest() {
 
 	}
@@ -65,18 +65,27 @@ public class WekaForecasterTest {
 					} else {
 						indexOfAtt++;
 					}
-
+				result.add(test.attributeToDoubleArray(indexOfAtt)[0]);
 				if (allSame(train, indexOfAtt)) {
 					System.out.println("all same");
-					result.add(test.attributeToDoubleArray(indexOfAtt)[0]);
+				
 					result.add(Double.NaN);
 				} else {
 
 					WekaForecaster forecaster = new WekaForecaster();
 					forecaster.setFieldsToForecast(attribute);
 					weka.classifiers.functions.SMOreg scheme = new weka.classifiers.functions.SMOreg();
-					forecaster.getTSLagMaker().setTimeStampField("Date"); // date
-																			// time
+					
+					if (!artIndex){
+						forecaster.getTSLagMaker().setTimeStampField("Date"); 
+						forecaster.getTSLagMaker().setMinLag(1);
+						forecaster.getTSLagMaker().setMaxLag(4); // monthly data
+							// add a quarter of the year indicator field
+						forecaster.getTSLagMaker().setAddQuarterOfYear(true);
+						forecaster.getTSLagMaker().setAddMonthOfYear(true);
+					}
+
+					
 					scheme.setOptions(weka.core.Utils
 					// .splitOptions("-C 1.0 -N 0 -I \"weka.classifiers.functions.supportVector.RegSMOImproved -T 0.001 -V -P 1.0E-12 -L 0.001 -W 1\" -K \"weka.classifiers.functions.supportVector.NormalizedPolyKernel -E 2.0 -C 250007\""));
 							.splitOptions(" -C 1.0 -N 0 -I \"weka.classifiers.functions.supportVector.RegSMOImproved -T 0.001 -V -P 1.0E-12 -L 0.001 -W 1\" -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\""));
@@ -89,11 +98,7 @@ public class WekaForecasterTest {
 					// null);
 					forecaster.getTSLagMaker().determinePeriodicity(train,
 							"Date", TSLagMaker.Periodicity.QUARTERLY);
-					forecaster.getTSLagMaker().setMinLag(1);
-					forecaster.getTSLagMaker().setMaxLag(4); // monthly data
-					// add a quarter of the year indicator field
-					forecaster.getTSLagMaker().setAddQuarterOfYear(true);
-					forecaster.getTSLagMaker().setAddMonthOfYear(true);
+				
 					// build the model
 					forecaster.buildForecaster(train, System.out);
 
@@ -109,18 +114,18 @@ public class WekaForecasterTest {
 
 					// -----evaluation
 					// a new evaluation object (evaluation on the training data)
-					TSEvaluation eval = new TSEvaluation(train, test);
+			//		TSEvaluation eval = new TSEvaluation(train, test);
 
 					// generate and evaluate predictions for up to 12 steps
 					// ahead
-					eval.setHorizon(stepAhead);
+				//	eval.setHorizon(stepAhead);
 
-					eval.setEvaluateOnTrainingData(false);
+				//	eval.setEvaluateOnTrainingData(false);
 					// prime with enough data to cover our maximum lag
 					// eval.setPrimeWindowSize(4);
 
-					eval.setEvaluationModules("weka.classifiers.timeseries.eval.RMSEModule,weka.classifiers.timeseries.eval.MAPEModule");
-					eval.evaluateForecaster(forecaster, System.out);
+				//	eval.setEvaluationModules("weka.classifiers.timeseries.eval.RMSEModule,weka.classifiers.timeseries.eval.MAPEModule");
+			//		eval.evaluateForecaster(forecaster, System.out);
 
 					// ------
 					// output the predictions. Outer list is over the steps;
@@ -145,14 +150,14 @@ public class WekaForecasterTest {
 					// ----
 
 
-						List<List<NumericPrediction>> predLL = eval
-								.getM_predictionsForTestData().get(0)
-								.getM_predictions();
+			//			List<List<NumericPrediction>> predLL = eval
+			//					.getM_predictionsForTestData().get(0)
+			//					.getM_predictions();
 
-							ErrorModule errormodule = eval
-									.getM_predictionsForTestData().get(0);
-							NumericPrediction predForTarget = errormodule
-									.getM_predictions().get(0).get(0);
+			//				ErrorModule errormodule = eval
+			//						.getM_predictionsForTestData().get(0);
+			//				NumericPrediction predForTarget = errormodule
+			//						.getM_predictions().get(0).get(0);
 
 						
 								int indexOfFa = 0;
@@ -163,13 +168,13 @@ public class WekaForecasterTest {
 										indexOfFa++;
 									}
 
-								result.add(predForTarget.actual());
+							
 								Main.count[indexOfFa] += 1;
 
 								result.add((double) Math.round(eforecast.get(0).get(0).predicted()));
 								Main.sumErr[indexOfFa] += Math.abs(Math
 										.round(eforecast.get(0).get(0).predicted())
-										- predForTarget.actual());
+										- 	test.attributeToDoubleArray(indexOfAtt)[0]);
 							}
 						
 					
