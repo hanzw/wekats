@@ -48,10 +48,16 @@ public class CSVLoader {
 		// Loading Data
 		try {
 			br = new BufferedReader(new FileReader(file));
+			line = br.readLine();
+			temp = line.split(cvsSplitBy);
+			data.add(temp);
 			while ((line = br.readLine()) != null) {
 				// use comma as separator
-				temp = line.split(cvsSplitBy);
-				data.add(temp);
+				if(line.indexOf("Class")!=-1){
+					temp = line.split(cvsSplitBy);
+					data.add(temp);
+				}
+		
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

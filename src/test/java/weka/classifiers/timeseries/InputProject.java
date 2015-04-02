@@ -30,4 +30,27 @@ public class InputProject {
 		}
 		return files;
 	}
+	
+	public void deleteFolder(String dir) {
+		  File delfolder=new File(dir); 
+		  File oldFile[] = delfolder.listFiles();
+		  try 
+		  { 
+		     for (int i = 0; i < oldFile.length; i++)
+		     {
+		        if(oldFile[i].isDirectory())
+		        {
+		           deleteFolder(dir+oldFile[i].getName()+"//"); //递归清空子文件夹
+		        }
+		        oldFile[i].delete();
+		     }
+		  } 
+		  catch (Exception e) 
+		  { 
+		    System.out.println("清空文件夹操作出错!"); 
+		    e.printStackTrace(); 
+		  }
+		}
+		 
+	
 }

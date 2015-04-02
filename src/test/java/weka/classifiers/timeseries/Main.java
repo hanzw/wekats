@@ -15,8 +15,8 @@ public class Main {
 	static final String[] wekaFileType = new String[] { "arff" };
 	//The FISRT ATTRIBUTE MUST BE THE NAME OF THE CLASS
 	//@[]attributes=[Name/ID,Attribute1..AttributeN,Timestamp]
-	static final String[] dataAttributes = { "Name", "PercentLackOfCohesion","CountLineCode","SumCyclomatic","CountDeclMethodAll","Date"};
-	static final String[] forecastAttributes={"PercentLackOfCohesion","CountLineCode","SumCyclomatic","CountDeclMethodAll"};
+	static final String[] dataAttributes = {"Name","AvgCyclomatic","AvgCyclomaticModified","AvgCyclomaticStrict","AvgEssential","AvgLine","AvgLineBlank","AvgLineCode","AvgLineComment","CountClassBase","CountClassCoupled","CountClassDerived","CountDeclClassMethod","CountDeclClassVariable","CountDeclInstanceMethod","CountDeclInstanceVariable","CountDeclMethod","CountDeclMethodAll","CountDeclMethodDefault","CountDeclMethodPrivate","CountDeclMethodProtected","CountDeclMethodPublic","CountLine","CountLineBlank","CountLineCode","CountLineCodeDecl","CountLineCodeExe","CountLineComment","CountSemicolon","CountStmt","CountStmtDecl","CountStmtExe","MaxCyclomatic","MaxCyclomaticModified","MaxCyclomaticStrict","MaxEssential","MaxInheritanceTree","MaxNesting","PercentLackOfCohesion","RatioCommentToCode","SumCyclomatic","SumCyclomaticModified","SumCyclomaticStrict","SumEssential","Date"};
+	static final String[] forecastAttributes={"AvgCyclomatic","AvgCyclomaticModified","AvgCyclomaticStrict","AvgEssential","AvgLine","AvgLineBlank","AvgLineCode","AvgLineComment","CountClassBase","CountClassCoupled","CountClassDerived","CountDeclClassMethod","CountDeclClassVariable","CountDeclInstanceMethod","CountDeclInstanceVariable","CountDeclMethod","CountDeclMethodAll","CountDeclMethodDefault","CountDeclMethodPrivate","CountDeclMethodProtected","CountDeclMethodPublic","CountLine","CountLineBlank","CountLineCode","CountLineCodeDecl","CountLineCodeExe","CountLineComment","CountSemicolon","CountStmt","CountStmtDecl","CountStmtExe","MaxCyclomatic","MaxCyclomaticModified","MaxCyclomaticStrict","MaxEssential","MaxInheritanceTree","MaxNesting","PercentLackOfCohesion","RatioCommentToCode","SumCyclomatic","SumCyclomaticModified","SumCyclomaticStrict","SumEssential"};
 	static double[] sumErr;
 	static double[] count;
 	
@@ -24,6 +24,9 @@ public class Main {
 		
 		ArrayList<ArrayList> predictions= new ArrayList<ArrayList>();
 		InputProject input = new InputProject();
+		//initialization
+		input.deleteFolder(csvFolder);
+		input.deleteFolder(arffFolder);
 		System.out.println("----------------Loading metrics files----------------");
 		List<File> metricsFiles = input.readDirectory(metricsFolder,
 				metricsFileType);
@@ -32,7 +35,7 @@ public class Main {
 		//datas = ArrayList:(ArrayList:metricsVer1(String[]Row1, Row2...),metricsVer2()...)
 		CSVLoader csvloader = new CSVLoader();
 		ArrayList<ArrayList> datas = csvloader.readAll(metricsFolder);
-		
+
 		// Start the pre-process
 		classFilter classfilter = new classFilter(metricsFiles, datas, dataAttributes);
 		

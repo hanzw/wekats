@@ -48,9 +48,6 @@ public class classFilter {
 		for (String[] s : data1) {
 			Data dataTemp = new Data();
 			dataTemp.cName = s[0];
-			if(s[0].equals("io.realm.examples.concurrency.model.Dog")){
-				System.out.println();
-			}
 			dataTemp.data.add(deleteClassName(s));
 			int allExist = 0;
 			Boolean exsit = false;

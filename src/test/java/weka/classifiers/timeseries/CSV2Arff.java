@@ -31,7 +31,8 @@ System.out.println(file);
 			loader.setDateAttributes("last");
 			loader.setSource(file);
 			Instances data = loader.getDataSet();
-
+			data.stableSort(data
+					.attribute(Main.dataAttributes[Main.dataAttributes.length - 1]));
 			// New File name
 			String newName = FilenameUtils.removeExtension(file.getName())
 					+ ".arff";
