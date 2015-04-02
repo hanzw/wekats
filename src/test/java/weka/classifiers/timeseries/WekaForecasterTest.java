@@ -76,11 +76,11 @@ public class WekaForecasterTest {
 					WekaForecaster forecaster = new WekaForecaster();
 					forecaster.setFieldsToForecast(attribute);
 					if (!artIndex) {
-						weka.classifiers.functions.SMOreg scheme = new weka.classifiers.functions.SMOreg();// SMOreg
+						weka.classifiers.functions.MultilayerPerceptron scheme = new weka.classifiers.functions.MultilayerPerceptron();// SMOreg
 																											// ;GaussianProcesses;
 																											// LinearRegression;MultilayerPerceptron
-						scheme.setOptions(weka.core.Utils
-								.splitOptions("-C 1.0 -N 0 -I \"weka.classifiers.functions.supportVector.RegSMOImproved -T 0.001 -V -P 1.0E-12 -L 0.001 -W 1\" -K \"weka.classifiers.functions.supportVector.NormalizedPolyKernel -E 2.0 -C 250007\""));
+					//	scheme.setOptions(weka.core.Utils
+					//			.splitOptions("-C 1.0 -N 0 -I \"weka.classifiers.functions.supportVector.RegSMOImproved -T 0.001 -V -P 1.0E-12 -L 0.001 -W 1\" -K \"weka.classifiers.functions.supportVector.NormalizedPolyKernel -E 2.0 -C 250007\""));
 
 						forecaster
 								.getTSLagMaker()
@@ -104,6 +104,7 @@ public class WekaForecasterTest {
 						.getTSLagMaker()
 						.setTimeStampField(
 								"");
+						
 						weka.classifiers.functions.MultilayerPerceptron scheme = new weka.classifiers.functions.MultilayerPerceptron();
 						forecaster.setBaseForecaster(scheme);
 					}
@@ -114,7 +115,7 @@ public class WekaForecasterTest {
 					// prime the forecaster with enough recent historical data
 					// to cover up to the maximum lag.
 					forecaster.primeForecaster(train);
-				
+				//	if (forecaster.getTSLagMaker().isUsingAnArtificialTimeIndex()) System.out.println("yea");
 					// forecast for <stepAhead> units beyond the end of the training data
 					// List<List<NumericPrediction>> forecast = forecaster.forecast(stepAhead, System.out);
 
