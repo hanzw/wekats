@@ -22,7 +22,7 @@ public class WekaForecasterTest {
 
 	static final int testDataLength = 1;
 	static final int stepAhead = 1;
-	static final boolean artIndex = true;
+	static final boolean artIndex = false;
 
 	WekaForecasterTest() {
 
